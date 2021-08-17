@@ -1,0 +1,1 @@
+{"version":3,"file":"styles.css","mappings":";AACA;IACI,uBAAuB;IACvB,YAAY;AAChB;;AAEA;IACI,kBAAkB;AACtB","sources":["webpack://webpack/./src/styles.css"],"sourcesContent":["\nbody{\n    background-color: beige;\n    color: black;\n}\n\nh1{\n    position: absolute;\n}\n\n\n"],"names":[],"sourceRoot":""}

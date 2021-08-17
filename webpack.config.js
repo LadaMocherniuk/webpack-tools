@@ -1,43 +1,45 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpackMerge = require('webpack-merge');
+
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const madeConfig = env => require(`./utils/webpack.{env.mode}`)(env);
 
 
-module.exports = {
-    entry:'./src/index.js',
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
-    },
-    module: {
-        rules: [
-            {
-                test: /\.js$/, 
-                exclude: /node_modules/,
-                use: ['babel-loader']
-            },
-            {
-                test: /\.css$/,
-                use: ['style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
-            },
-        ]
-    },
-    plugins: [
-        new CleanWebpackPlugin(),
-        new HtmlWebpackPlugin({
-            filename: 'index.html',
-            template: './src/index.html',
-            inject: true
-        }),
-        new MiniCssExtractPlugin({
-            filename: 'styles.css',
-            
-        })
-    ],
-    devServer: {
-        port: 4000
-    },
-    devtool: 'cheap-eval-source-map'
-    
-};
+module.exports = env => webpackMerge(
+    {
+        mode: env.mode,
+        entry:'./src/index.js',
+        output: {
+            path: path.resolve(__dirname, 'dist'),
+            filename: 'bundle.js'
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.js$/, 
+                    exclude: /node_modules/,
+                    use: ['babel-loader']
+                },
+                {
+                    test: /\.(gif|png|jpe?g|svg)$/i,
+                    use: [
+                        {
+                            loader: 'url-loader',
+                            options: {
+                                name: '[path]/[name].[ext]',
+                                limit: 5000
+                            }
+                        }
+                    ]
+                },
+                {
+                    test: /\.html$/,
+                    use: 'html-loader'
+                },
+                {test: /\.hbs$/, use: "handlebars-loader"}
+            ]
+        },
+        plugins: [ new CleanWebpackPlugin() ],
+    }, madeConfig(env)
+);
+
